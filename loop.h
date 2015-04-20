@@ -1,6 +1,3 @@
-//: loop.h : loop range and interpolated iterators - R.Richter 2015-03-01
-/////////////////////////////////////////////////////////////////////////
-
 #ifndef LOOP_RANGE_H
 #define LOOP_RANGE_H
 
@@ -8,6 +5,9 @@
 #include <iterator>
 
 namespace loop {
+
+// ---[ integral ranges ]----------------------------------
+
 namespace detail {
 
 template <typename Value, typename N, typename Increment>
@@ -52,7 +52,7 @@ auto range(Start start, End end, Increment step, bool include_end = false)
 {
 	auto n = step ? (end - start) / step : 0;
 	static_assert(std::is_integral<decltype(n)>::value, 
-		"intergal counter required");
+		"integral counter required");
 
 	if (n < 0 || (step == 0 && start != end)) n = 0;
 	else if (include_end || start + n * step != end) ++n;	
@@ -76,8 +76,8 @@ template <typename Value, typename N>
 class LinearInterpolatedRange
 {
 public:
-	LinearInterpolatedRange(Value a, Value b, N intervals, N first, N last)
-	: a_(a), b_(b), intervals_(intervals), first_(first), last_(last)
+	LinearInterpolatedRange(Value a, Value b, N n, N first, N last)
+	: a_(a), dx_((b-a)/n), n_(n), first_(first), last_(last)
 	{
 	}
 
@@ -85,27 +85,27 @@ public:
 	{
 	public:
 		iterator() : i_(0) {}
-		iterator(Value a, Value b, N n, N i)
-		: a_(a), b_(b), n_(n), i_(i) 
+		iterator(Value a, Value dx, N i)
+		: a_(a), dx_(dx), i_(i) 
 		{
 		}
 
-		auto operator*() const { return ((n_ - i_) * a_ + i_ * b_) / n_; }
+		auto operator*() const { return a_ + i_ * dx_; }
 		auto operator++() { ++i_; return *this; }
 		auto operator++(int) { auto tmp = *this; ++(*this); return tmp; }
 
 		bool operator==(iterator rhs) const { return i_ == rhs.i_; }
 		bool operator!=(iterator rhs) const { return !(*this == rhs); }
 	private:
-		Value a_, b_;
-		N n_, i_;	
+		Value a_, dx_;
+		N i_;	
 	};
 
-	iterator begin() const { return { a_, b_, intervals_, first_ }; }
-	iterator end()   const { return { a_, b_, intervals_, last_ + 1 }; }
+	iterator begin() const { return { a_, dx_, first_ }; }
+	iterator end()   const { return { a_, dx_, last_ + 1 }; }
 private:
-	Value a_, b_;
-	N intervals_, first_, last_;
+	Value a_, dx_;
+	N n_, first_, last_;
 };
 
 } // namespace detail
@@ -118,9 +118,9 @@ auto linrange(Start a, End b, N steps, interval type = interval::closed)
 	static_assert(std::is_integral<N>::value, 
 		"integral interval step counter required");	
 
-	using Value = decltype((a * steps + b * steps) / steps); 
+	using Value = decltype(a + (b - a) / steps * steps); 
 	static_assert(!std::is_integral<Value>::value, 
-		"non-integral values for interpolation required");
+		"non-integral type boundaries values required");
 
 	if (steps < 1) 
 	{

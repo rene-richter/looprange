@@ -1,5 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
+
+# modified for Python3 - R.Richter
 
 """
 ----------------------------------------------------------
@@ -23,8 +25,8 @@ from itertools import cycle
 import matplotlib.patches as mpatches
 from matplotlib.patches import Polygon
 import pandas as pd
-from Tkinter import *
-import tkFileDialog
+from tkinter import *
+import tkinter.filedialog
 
 # -----------------------------------------------------------------------   
 def get_numeric_list(any_list):
@@ -33,7 +35,7 @@ def get_numeric_list(any_list):
     """ 
     ret_list = []
     for elem in any_list:
-        if isinstance(elem, basestring):          
+        if isinstance(elem, str):          
             num = int(filter(str.isdigit, elem))
             if 'k' in elem:   num *= 1e03
             elif 'M' in elem: num *= 1e06
@@ -92,7 +94,7 @@ def plot_factored_bmks(factored):
     col = cycle(cols)
     syb = cycle(sybs)
     for bmk in factored:
-        plot_factored_benchmark(bmk, col.next(), syb.next())
+        plot_factored_benchmark(bmk, next(col), next(syb))
 
     legend = plt.legend(loc='upper right', shadow=True)
     #legend.get_frame().set_facecolor('#00FFCC') 
@@ -121,14 +123,14 @@ def plot_benchmark_file(filename):
 
 # -----------------------------------------------------------------------            
 def openwindows():
-    nam = tkFileDialog.askopenfilename()
+    nam = filedialog.askopenfilename()
     if nam != '':
         plot_benchmark_file(nam)
 
 def plot_benchmarks():
     root = Tk()
     myfiletypes = [('Python files', '*.py'), ('All files', '*')]
-    open = tkFileDialog.Open(root, filetypes = myfiletypes)
+    open = filedialog.Open(root, filetypes = myfiletypes)
     Button(root, text="PLOT Benchmark", command=openwindows).pack()
 
     statusbar = Label(root, text="", bd=1, relief=SUNKEN, anchor=W)

@@ -93,10 +93,10 @@ void benchmark()
 			sum4 = sum;
 		};
 		
-	auto linrange = [&](int n) 
+	auto linspace = [&](int n) 
 		{  
 			double sum = 0;
-			for (auto x : loop::linrange(a, b, n))
+			for (auto x : loop::linspace(a, b, n))
 			{
 				sum += x;
 			}
@@ -109,7 +109,7 @@ void benchmark()
     bm.run("x=a+i*dx",   10, i_times_dx,  "steps", { 10, 100, 1000, 10000, 100000 }); 
     bm.run("interpol /", 10, with_div,    "steps", { 10, 100, 1000, 10000, 100000 }); 
     bm.run("interpol *", 10, without_div, "steps", { 10, 100, 1000, 10000, 100000 }); 
-    bm.run("linrange",   10, linrange,    "steps", { 10, 100, 1000, 10000, 100000 }); 
+    bm.run("linspace",   10, linspace,    "steps", { 10, 100, 1000, 10000, 100000 }); 
 
     bm.serialize("double type for loops", "benchmark_results.txt");
 	

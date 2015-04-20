@@ -2,3 +2,5 @@ syntax: glob
 
 build/*
 profile/*
+benchmark1.png
+benchmark_results.txt

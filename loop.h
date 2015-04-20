@@ -110,13 +110,13 @@ private:
 
 } // namespace detail
 
-enum class interval { closed, rightopen, leftopen, open };
+enum class boundary { closed, rightopen, leftopen, open };
 
 template <typename Start, typename End, typename N>
-auto linrange(Start a, End b, N steps, interval type = interval::closed)
+auto linspace(Start a, End b, N steps, boundary type = boundary::closed)
 {
 	static_assert(std::is_integral<N>::value, 
-		"integral interval step counter required");	
+		"integral boundary step counter required");	
 
 	using Value = decltype(a + (b - a) / steps * steps); 
 	static_assert(!std::is_integral<Value>::value, 
@@ -125,12 +125,12 @@ auto linrange(Start a, End b, N steps, interval type = interval::closed)
 	if (steps < 1) 
 	{
 		steps = 1;
-		type = interval::open;
+		type = boundary::open;
 		b = static_cast<End>(a);
 	}
 	
-	bool without_start = type == interval::open || type == interval::leftopen;
-	bool without_end   = type == interval::open || type == interval::rightopen;
+	bool without_start = type == boundary::open || type == boundary::leftopen;
+	bool without_end   = type == boundary::open || type == boundary::rightopen;
 
 	N first = without_start;
 	N last  = steps - without_end;

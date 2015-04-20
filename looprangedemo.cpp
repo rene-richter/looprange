@@ -35,27 +35,27 @@ int main()
 
 	// ---[ non-integral range ]---
 	
-	for (auto x : loop::linrange(0., 2., 4)) std::cout << x << ' ';
+	for (auto x : loop::linspace(0., 2., 4)) std::cout << x << ' ';
 	std::cout << '\n';
 	// 0 .5 1 1.5 2
 	
-	for (auto x : loop::linrange(0., 2., 4, loop::interval::closed)) std::cout << x << ' ';
+	for (auto x : loop::linspace(0., 2., 4, loop::boundary::closed)) std::cout << x << ' ';
 	std::cout << '\n';
 	// 0 .5 1 1.5 2
 
-	for (auto x : loop::linrange(0., 2., 4, loop::interval::rightopen)) std::cout << x << ' ';
+	for (auto x : loop::linspace(0., 2., 4, loop::boundary::rightopen)) std::cout << x << ' ';
 	std::cout << '\n';
 	// 0 .5 1 1.5
 
-	for (auto x : loop::linrange(0., 2., 4, loop::interval::leftopen)) std::cout << x << ' ';
+	for (auto x : loop::linspace(0., 2., 4, loop::boundary::leftopen)) std::cout << x << ' ';
 	std::cout << '\n';
 	// .5 1 1.5 2
 
-	for (auto x : loop::linrange(0., 2., 4, loop::interval::open)) std::cout << x << ' ';
+	for (auto x : loop::linspace(0., 2., 4, loop::boundary::open)) std::cout << x << ' ';
 	std::cout << '\n';
 	// .5 1 1.5
 
-	for (auto x : loop::linrange(0., 1., 3)) std::cout << x << ' ';
+	for (auto x : loop::linspace(0., 1., 3)) std::cout << x << ' ';
 	std::cout << '\n';
 	// 0 0.333333 0.666667 1
 

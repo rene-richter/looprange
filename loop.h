@@ -64,7 +64,7 @@ public:
 } // end namespace detail
 
 template <typename Start, typename End, typename Increment>
-auto range(Start start, End end, Increment step, bool include_end = false) 
+auto range(Start start, End end, Increment step, bool with_end = false) 
 {
 	using Domain = typename detail::CommonType<Start, End>::type;
 	using N = typename detail::CommonType<Domain, size_t>::type;
@@ -72,7 +72,7 @@ auto range(Start start, End end, Increment step, bool include_end = false)
 	static_assert(std::is_integral<Domain>::value, "integral type required");
 
 	Domain a = start, b = end;	
-	N n = a == b && include_end;
+	N n = a == b && with_end;
 	
 	if (step != 0 && (b < a) == (step < 0))
 	{
@@ -80,7 +80,7 @@ auto range(Start start, End end, Increment step, bool include_end = false)
 		Increment abs_step = step > 0 ? step : -step;
 
 		if (abs_step != 1) n /= abs_step;
-		if (include_end) ++n;
+		if (with_end) ++n;
 		else if (Domain(a + n*step) != b) ++n;
 	}
 	
@@ -101,11 +101,11 @@ auto countdown(N n) { return range((n ? n-1 : 0), 0, -1, n != 0); }
 namespace detail {
 
 template <typename Domain, typename N>
-class LinearInterpolatedRange
+class LinearInterpolated
 {
 public:
-	LinearInterpolatedRange(Domain a, Domain b, N n, N first, N last)
-	: a_(a), dx_((b-a)/n), n_(n), first_(first), last_(last)
+	LinearInterpolated(Domain a, Domain b, N n, N first, N last)
+	: a_(a), dx_((b-a)/n), first_(first), last_(last)
 	{
 	}
 
@@ -133,10 +133,10 @@ public:
 	iterator end()   const { return { a_, dx_, last_ + 1 }; }
 private:
 	Domain a_, dx_;
-	N n_, first_, last_;
+	N first_, last_;
 };
 
-} // namespace detail
+} // end namespace detail
 
 enum class boundary { closed, rightopen, leftopen, open };
 
@@ -154,7 +154,6 @@ auto linspace(Start a, End b, N steps, boundary type = boundary::closed)
 	{
 		steps = 1;
 		type = boundary::open;
-		b = static_cast<End>(a);
 	}
 	
 	bool without_start = type == boundary::open || type == boundary::leftopen;
@@ -162,7 +161,7 @@ auto linspace(Start a, End b, N steps, boundary type = boundary::closed)
 
 	N first = without_start;
 	N last  = steps - without_end;
-	return detail::LinearInterpolatedRange<Domain, N>(a, b, steps, first, last);
+	return detail::LinearInterpolated<Domain, N>(a, b, steps, first, last);
 }
 
 } // end namespace loop

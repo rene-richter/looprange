@@ -7,7 +7,15 @@ int main()
 	std::cout << '\n';
 	// 0 1 2 3 4
 
-	for (auto i : loop::range_down(5)) std::cout << i << ' ';
+	for (auto i : loop::range(5u)) std::cout << i << ' ';
+	std::cout << '\n';
+	// 0 1 2 3 4
+
+	for (auto i : loop::countdown(5)) std::cout << i << ' ';
+	std::cout << '\n';
+	// 4 3 2 1 0
+
+	for (auto i : loop::countdown(5u)) std::cout << i << ' ';
 	std::cout << '\n';
 	// 4 3 2 1 0
 

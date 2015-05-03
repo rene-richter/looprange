@@ -3,6 +3,49 @@
 #include "catch.hpp"
 #include "loop.h"
 
+TEST_CASE("unsigned integer range with step < 0, valid parameter values", "[intrange]" ) 
+{
+	std::vector<int> v;
+	REQUIRE(v.size() == 0u);
+
+	SECTION("countdown(0u)") 
+	{
+		for (auto i : loop::countdown(0u)) v.push_back(i);
+		REQUIRE(v.size() == 0u);
+	}
+
+	SECTION("countdown(5u)") 
+	{
+		for (auto i : loop::countdown(5u)) v.push_back(i);
+		REQUIRE(v.size() == 5u);
+		REQUIRE(v == std::vector<int>({ 4, 3, 2, 1, 0 }));
+	}
+
+	SECTION("range(9u, 0, -2)") 
+	{
+		for (auto i : loop::range(9u, 0, -2)) v.push_back(i);
+		REQUIRE(v == std::vector<int>({ 9, 7, 5, 3, 1 }));
+	}
+
+	SECTION("range(9u, 0, -2, true)") 
+	{
+		for (auto i : loop::range(9u, 0, -2, true)) v.push_back(i);
+		REQUIRE(v == std::vector<int>({ 9, 7, 5, 3, 1 }));
+	}
+
+	SECTION("range(10u, 0, -2)") 
+	{
+		for (auto i : loop::range(10u, 0, -2)) v.push_back(i);
+		REQUIRE(v == std::vector<int>({ 10, 8, 6, 4, 2 }));
+	}
+
+	SECTION("range(10u, 0, -2, true)") 
+	{
+		for (auto i : loop::range(10u, 0, -2, true)) v.push_back(i);
+		REQUIRE(v == std::vector<int>({ 10, 8, 6, 4, 2, 0 }));
+	}
+}
+
 TEST_CASE("integer range, valid parameter values", "[intrange]" ) 
 {
 	std::vector<int> v;
@@ -21,13 +64,13 @@ TEST_CASE("integer range, valid parameter values", "[intrange]" )
 		REQUIRE(v == std::vector<int>({ 0, 1, 2, 3, 4 }));
 	}
 
-	SECTION("range_down(5)") 
+	SECTION("countdown(5)") 
 	{
-		for (auto i : loop::range_down(5)) v.push_back(i);
+		for (auto i : loop::countdown(5)) v.push_back(i);
 		REQUIRE(v.size() == 5u);
 		REQUIRE(v == std::vector<int>({ 4, 3, 2, 1, 0 }));
 	}
-
+	
 	SECTION("range(0, 1, 2)") 
 	{
 		for (auto i : loop::range(0, 1, 2)) v.push_back(i);

@@ -10,20 +10,20 @@ namespace loop {
 
 namespace detail {
 
-template <typename Value, typename N, typename Increment>
+template <typename T, typename N, typename Increment>
 class Range		
 {
 public: 
-	Range(Value start, N n, Increment step) 
+	Range(T start, N n, Increment step) 
 	: start_(start), n_(n), step_(step)
 	{
 	}
 	
-	class iterator : public std::iterator<std::forward_iterator_tag, Value>
+	class iterator : public std::iterator<std::forward_iterator_tag, T>
 	{
 	public:
 		iterator() : n_(0) {}
-		iterator(Value v, N n, Increment s) : v_(v), n_(n), s_(s) {}
+		iterator(T v, N n, Increment s) : v_(v), n_(n), s_(s) {}
 
 		auto operator*() const { return v_; }
 		auto operator++() { v_ += s_; --n_; return *this; }
@@ -32,7 +32,7 @@ public:
 		bool operator==(iterator rhs) const { return n_ == rhs.n_; }
 		bool operator!=(iterator rhs) const { return !(*this == rhs); }
 	private:
-		Value v_;
+		T v_;
 		N n_;
 		Increment s_;	
 	};
@@ -40,9 +40,25 @@ public:
 	iterator begin() const { return { start_, n_, step_ }; }
 	iterator end()   const { return {}; }
 private: 
-	Value start_;
+	T start_;
 	N n_;
 	Increment step_;
+};
+
+template <typename X, typename U>
+class CommonType
+{
+	using X1 = typename std::remove_reference<X>::type;
+	using U1 = typename std::remove_reference<U>::type;
+public:
+	using type = decltype(X1() + U1());
+};
+
+template <typename T>
+class CommonType<T, T>
+{
+public:
+	using type = typename std::remove_reference<T>::type;
 };
 
 } // end namespace detail
@@ -50,42 +66,54 @@ private:
 template <typename Start, typename End, typename Increment>
 auto range(Start start, End end, Increment step, bool include_end = false) 
 {
-	auto n = step ? (end - start) / step : 0;
-	static_assert(std::is_integral<decltype(n)>::value, 
-		"integral counter required");
+	using Domain = typename detail::CommonType<Start, End>::type;
+	using N = typename detail::CommonType<Domain, size_t>::type;
+	
+	static_assert(std::is_integral<Domain>::value, "integral type required");
 
-	if (n < 0 || (step == 0 && start != end)) n = 0;
-	else if (include_end || start + n * step != end) ++n;	
-	return detail::Range<Start, decltype(n), Increment>{ start, n, step };
+	Domain a = start, b = end;	
+	N n = a == b && include_end;
+	
+	if (step != 0 && (b < a) == (step < 0))
+	{
+		n = b < a ? a - b : b - a;
+		Increment abs_step = step > 0 ? step : -step;
+
+		if (abs_step != 1) n /= abs_step;
+		if (include_end) ++n;
+		else if (Domain(a + n*step) != b) ++n;
+	}
+	
+	return detail::Range<Domain, N, Increment>{ a, n, step };
 }
 
 template <typename Start, typename End>
 auto range(Start start, End end) { return range(start, end, 1); }
 
-template <typename End>
-auto range(End end) { return range(End(0), end); }
+template <typename N>
+auto range(N n) { return range(N{}, n); }
 
-template <typename End>
-auto range_down(End end) { return range(end - 1, End(0), -1, true); }
+template <typename N>
+auto countdown(N n) { return range((n ? n-1 : 0), 0, -1, n != 0); }
 
 // ---[ non-integral, interpolated ranges ]----------------------------------
 
 namespace detail {
 
-template <typename Value, typename N>
+template <typename Domain, typename N>
 class LinearInterpolatedRange
 {
 public:
-	LinearInterpolatedRange(Value a, Value b, N n, N first, N last)
+	LinearInterpolatedRange(Domain a, Domain b, N n, N first, N last)
 	: a_(a), dx_((b-a)/n), n_(n), first_(first), last_(last)
 	{
 	}
 
-	class iterator : public std::iterator<std::forward_iterator_tag, Value>
+	class iterator : public std::iterator<std::forward_iterator_tag, Domain>
 	{
 	public:
 		iterator() : i_(0) {}
-		iterator(Value a, Value dx, N i)
+		iterator(Domain a, Domain dx, N i)
 		: a_(a), dx_(dx), i_(i) 
 		{
 		}
@@ -97,14 +125,14 @@ public:
 		bool operator==(iterator rhs) const { return i_ == rhs.i_; }
 		bool operator!=(iterator rhs) const { return !(*this == rhs); }
 	private:
-		Value a_, dx_;
+		Domain a_, dx_;
 		N i_;	
 	};
 
 	iterator begin() const { return { a_, dx_, first_ }; }
 	iterator end()   const { return { a_, dx_, last_ + 1 }; }
 private:
-	Value a_, dx_;
+	Domain a_, dx_;
 	N n_, first_, last_;
 };
 
@@ -118,8 +146,8 @@ auto linspace(Start a, End b, N steps, boundary type = boundary::closed)
 	static_assert(std::is_integral<N>::value, 
 		"integral boundary step counter required");	
 
-	using Value = decltype(a + (b - a) / steps * steps); 
-	static_assert(!std::is_integral<Value>::value, 
+	using Domain = decltype(a + (b - a) / steps * steps); 
+	static_assert(!std::is_integral<Domain>::value, 
 		"non-integral type boundaries values required");
 
 	if (steps < 1) 
@@ -134,7 +162,7 @@ auto linspace(Start a, End b, N steps, boundary type = boundary::closed)
 
 	N first = without_start;
 	N last  = steps - without_end;
-	return detail::LinearInterpolatedRange<Value, N>(a, b, steps, first, last);
+	return detail::LinearInterpolatedRange<Domain, N>(a, b, steps, first, last);
 }
 
 } // end namespace loop

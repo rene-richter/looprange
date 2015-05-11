@@ -11,10 +11,10 @@ namespace loop {
 namespace detail {
 
 template <typename T, typename N, typename Increment>
-class Range		
+class RangeGenerator		
 {
 public: 
-	Range(T start, N n, Increment step) 
+	RangeGenerator(T start, N n, Increment step) 
 	: start_(start), n_(n), step_(step)
 	{
 	}
@@ -63,6 +63,13 @@ public:
 
 } // end namespace detail
 
+template <typename Start, typename N, typename Increment>
+auto generate(Start start, N n, Increment step) 
+{
+	static_assert(std::is_integral<N>::value, "integral type required");
+	return detail::RangeGenerator<Start, N, Increment>{ start, n, step };
+}
+
 template <typename Start, typename End, typename Increment>
 auto range(Start start, End end, Increment step, bool with_end = false) 
 {
@@ -84,7 +91,7 @@ auto range(Start start, End end, Increment step, bool with_end = false)
 		else if (Domain(a + n*step) != b) ++n;
 	}
 	
-	return detail::Range<Domain, N, Increment>{ a, n, step };
+	return detail::RangeGenerator<Domain, N, Increment>{ a, n, step };
 }
 
 template <typename Start, typename End>
@@ -101,10 +108,10 @@ auto countdown(N n) { return range((n ? n-1 : 0), 0, -1, n != 0); }
 namespace detail {
 
 template <typename Domain, typename N>
-class LinearInterpolated
+class LinearGenerator
 {
 public:
-	LinearInterpolated(Domain a, Domain b, N n, N first, N last)
+	LinearGenerator(Domain a, Domain b, N n, N first, N last)
 	: a_(a), dx_((b-a)/n), first_(first), last_(last)
 	{
 	}
@@ -161,7 +168,7 @@ auto linspace(Start a, End b, N steps, boundary type = boundary::closed)
 
 	N first = without_start;
 	N last  = steps - without_end;
-	return detail::LinearInterpolated<Domain, N>(a, b, steps, first, last);
+	return detail::LinearGenerator<Domain, N>(a, b, steps, first, last);
 }
 
 } // end namespace loop

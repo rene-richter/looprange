@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <complex>
 #include "loop.h"
 
 int main()
@@ -42,7 +43,8 @@ int main()
 	
 	std::cout << "-----------------\n";
 
-	for (auto s : loop::generate(std::string("Ba"), 5, "na")) 
+	using namespace std::literals;
+	for (auto s : loop::generate("Ba"s, 5, "na")) 
 		std::cout << s << '\n';
 
 	// Ba

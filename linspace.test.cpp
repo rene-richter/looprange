@@ -5,7 +5,8 @@
 
 TEST_CASE("linear spaced, valid parameter values", "[linspace]") 
 {
-	std::vector<double> v;
+	using Vec = std::vector<double>;
+	Vec v;
 	REQUIRE(v.size() == 0u);
 
 	SECTION("linspace(0., 2., 4) closed") 
@@ -14,7 +15,7 @@ TEST_CASE("linear spaced, valid parameter values", "[linspace]")
 		REQUIRE(v.size() == 5u);
 		REQUIRE(v.front() == 0.);
 		REQUIRE(v.back() == 2.);
-		REQUIRE(v == std::vector<double>({ 0., .5, 1., 1.5, 2. }));
+		REQUIRE(v == Vec({ 0., .5, 1., 1.5, 2. }));
 	}
 
 	SECTION("linspace(0., 2., 4) open") 
@@ -23,7 +24,7 @@ TEST_CASE("linear spaced, valid parameter values", "[linspace]")
 		REQUIRE(v.size() == 3u);
 		REQUIRE(v.front() == 0.5);
 		REQUIRE(v.back() == 1.5);
-		REQUIRE(v == std::vector<double>({ .5, 1., 1.5 }));
+		REQUIRE(v == Vec({ .5, 1., 1.5 }));
 	}
 
 	SECTION("linspace(0., 2., 4) rightopen") 
@@ -32,7 +33,7 @@ TEST_CASE("linear spaced, valid parameter values", "[linspace]")
 		REQUIRE(v.size() == 4u);
 		REQUIRE(v.front() == 0.);
 		REQUIRE(v.back() == 1.5);
-		REQUIRE(v == std::vector<double>({ 0., .5, 1., 1.5 }));
+		REQUIRE(v == Vec({ 0., .5, 1., 1.5 }));
 	}
 
 	SECTION("linspace(0., 2., 4) leftopen") 
@@ -41,7 +42,7 @@ TEST_CASE("linear spaced, valid parameter values", "[linspace]")
 		REQUIRE(v.size() == 4u);
 		REQUIRE(v.front() == .5);
 		REQUIRE(v.back() == 2.);
-		REQUIRE(v == std::vector<double>({ .5, 1., 1.5, 2. }));
+		REQUIRE(v == Vec({ .5, 1., 1.5, 2. }));
 	}
 
 	SECTION("linspace(0., 1., 3) open") 
@@ -50,7 +51,7 @@ TEST_CASE("linear spaced, valid parameter values", "[linspace]")
 		REQUIRE(v.size() == 4u);
 		REQUIRE(v.front() == 0.);
 		REQUIRE(v.back() == 1.);
-		REQUIRE(v == std::vector<double>({ 0., 1/3., 2/3., 1. }));
+		REQUIRE(v == Vec({ 0., 1/3., 2/3., 1. }));
 	}
 
 	SECTION("linspace(0., 1., 1) closed") 
@@ -59,7 +60,7 @@ TEST_CASE("linear spaced, valid parameter values", "[linspace]")
 		REQUIRE(v.size() == 2u);
 		REQUIRE(v.front() == 0.);
 		REQUIRE(v.back() == 1.);
-		REQUIRE(v == std::vector<double>({ 0., 1. }));
+		REQUIRE(v == Vec({ 0., 1. }));
 	}
 
 	SECTION("linspace(2., 0., 4) closed") 
@@ -68,7 +69,7 @@ TEST_CASE("linear spaced, valid parameter values", "[linspace]")
 		REQUIRE(v.size() == 5u);
 		REQUIRE(v.front() == 2.);
 		REQUIRE(v.back() == 0.);
-		REQUIRE(v == std::vector<double>({ 2., 1.5, 1., .5, 0. }));
+		REQUIRE(v == Vec({ 2., 1.5, 1., .5, 0. }));
 	}
 	
 	SECTION("linspace(1., 2., n) closed") 
@@ -90,7 +91,8 @@ TEST_CASE("linear spaced, valid parameter values", "[linspace]")
 
 TEST_CASE("linear spaced, invalid parameter values", "[linspace]") 
 {
-	std::vector<double> v;
+	using Vec = std::vector<double>;
+	Vec v;
 	REQUIRE(v.size() == 0u);
 
 	SECTION("n<1 boundarys results in empty linspace ") 

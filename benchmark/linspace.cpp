@@ -1,5 +1,5 @@
 #include <iostream>
-#include "loop.h"
+#include "../loop.h"
 #include "benchmark.h"
 
 bool demo(int steps)

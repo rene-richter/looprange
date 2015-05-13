@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "loop.h"
 
 int main()
@@ -39,6 +40,17 @@ int main()
 	std::cout << '\n';
 	// 10 8 6 4 2 0
 	
+	std::cout << "-----------------\n";
+
+	for (auto s : loop::generate(std::string("Ba"), 5, "na")) 
+		std::cout << s << '\n';
+
+	// Ba
+	// Bana
+	// Banana
+	// Bananana
+	// Banananana
+		
 	std::cout << "-----------------\n";
 
 	// ---[ non-integral range ]---

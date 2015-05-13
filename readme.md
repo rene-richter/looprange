@@ -4,10 +4,10 @@ This header-only library provides lazy generated values for floating-point, inte
 
 # Easy to install and use
 
-* Download `loop.h` and `#include` it into your project. 
+* Download [loop.h](./loop.h) and `#include` it into your project. 
 * Write range-based for loop (see below).
 * Compile as C++14 or higher (g++ or clang with option -std=c++14).
-```
+```cpp
 #include "loop.h"
 // ...
 using namespace loop;
@@ -29,7 +29,8 @@ See also: loop.demo.cpp
 # A more detailed documentation
 ## Equispaced floating-point values 
 
-```
+`linspace(a, b, n [, boundary])` generates equispaced values $x_i \in [a,b]$, i = 0,...,n with $x_i = a + i(b-a)/n$  
+```cpp
 using namespace loop;
 
 for (auto x : linspace(0, 1.0, 4)) ... // 0 0.25 0.5 0.75 1
@@ -43,7 +44,8 @@ for (auto x : linspace(0, 1.0, 4, boundary::open))      ... // 0.25 0.5 0.75
 See also: MATLAB, Numpy 
 ## generic loop generator
 
-```
+`generate(startvalue, count, increment)`   
+```cpp
 using namespace loop;
 
 for (auto x : generate(4, 5, -1))                 ... // 4 3 2 1 0
@@ -52,9 +54,11 @@ for (auto x : generate(std::string("O"), 5, "i")) ... // : O Oi Oii Oiii Oiiii
 See also: Semenov
 
 ## Integral values range based for loops
-```
+`range([start,] stop [, step [, withend]])`
+```cpp
 using namespace loop;
 
+for (auto i : range(5))             ... // 0 1 2 3 4
 for (auto i : range(0, 5))          ... // 0 1 2 3 4
 for (auto i : range(5, 0, -1))      ... // 5 4 3 2 1
 for (auto i : range(0, 6, 2, true)) ... // 0 2 4 6
@@ -62,7 +66,7 @@ for (auto i : countdown(5))         ... // 4 3 2 1 0
 ```
 
 Index für Standard-Container, z.B. `std::vector<T> v`:
-```
+```cpp
 for (auto i : range(v.size())     ... // 0 ... v.size()-1 
 for (auto i : range(3, v.size())  ... // 3 ... v.size()-1 
 for (auto i : countdown(v.size()) ... // v.size()-1 ... 0

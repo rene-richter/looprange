@@ -12,7 +12,7 @@ set(CMAKE_BUILD_TYPE Release)
 
 project (Loop)
 add_executable(loopdemo loop.demo.cpp)
-add_executable(looptest range.test.cpp generate.test.cpp linspace.test.cpp)
+add_executable(looptest main.test.cpp range.test.cpp generate.test.cpp linspace.test.cpp)
 
 add_executable(benchmark benchmark/bm_loop.cpp)
 add_executable(wrong doc/wrongway.cpp)

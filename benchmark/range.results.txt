@@ -1,0 +1,2 @@
+{ 'benchmark_name' : 'int type for loops', 'experiment_name' : 'x+=1', 'time_type' : 'nanoseconds', 'factor_name' : 'steps', 'factors' : [ 10, 100, 1000, 10000, 100000 ], 'timings' : [ 2597, 2597, 3578, 13234, 113028 ] } 
+{ 'benchmark_name' : 'int type for loops', 'experiment_name' : 'range', 'time_type' : 'nanoseconds', 'factor_name' : 'steps', 'factors' : [ 10, 100, 1000, 10000, 100000 ], 'timings' : [ 2646, 2646, 3578, 13185, 113371 ] } 

@@ -14,8 +14,7 @@ project (Loop)
 add_executable(loopdemo loop.demo.cpp)
 add_executable(looptest range.test.cpp generate.test.cpp linspace.test.cpp)
 
-add_executable(perf_linspace benchmark/linspace.cpp)
-add_executable(perf_simple benchmark/simpletiming.cpp)
+add_executable(benchmark benchmark/bm_loop.cpp)
 add_executable(wrong doc/wrongway.cpp)
 
 enable_testing()

@@ -40,7 +40,7 @@ bool demo(int steps)
 	return true;
 }
 
-void benchmark()
+void benchmark_linspace()
 {	
 	double a = 1, b = 6;
 	double sum1, sum2, sum3, sum4, sum5;
@@ -111,7 +111,7 @@ void benchmark()
     bm.run("interpol *", 10, without_div, "steps", { 10, 100, 1000, 10000, 100000 }); 
     bm.run("linspace",   10, linspace,    "steps", { 10, 100, 1000, 10000, 100000 }); 
 
-    bm.serialize("double type for loops", "benchmark_results.txt");
+    bm.serialize("double type for loops", "linspace.results.txt");
 	
 	std::cout 
 		<< sum1 << ' ' 
@@ -121,9 +121,47 @@ void benchmark()
 		<< sum5 << '\n';
 }
 
+void benchmark_range()
+{	
+	int a = 1, step = 1;
+	long long sum1, sum2;
+	
+	auto x_plus_2 = [&](int n) 
+		{  
+			long long sum = 0;
+			for (auto x = a; x < n; x += step)
+			{
+				sum += x;
+			}
+			sum1 = sum;
+		};
+
+	auto range = [&](int n) 
+		{  
+			long long sum = 0;
+			for (auto x : loop::range(a, n, step))
+			{
+				sum += x;
+			}
+			sum2 = sum;
+		};	
+	
+    bmk::benchmark<std::chrono::nanoseconds> bm;
+
+    bm.run("x+=1",  10, x_plus_2, "steps", { 10, 100, 1000, 10000, 100000 }); 
+    bm.run("range", 10, range,    "steps", { 10, 100, 1000, 10000, 100000 }); 
+
+    bm.serialize("int type for loops", "range.results.txt");
+	
+	std::cout 
+		<< sum1 << ' ' 
+		<< sum2 << '\n';
+}
+
 int main()
 {
-	benchmark();
+	benchmark_linspace();
+	benchmark_range();
 	/*
 	for (int i = 2; i <= 50; ++i)
 	{

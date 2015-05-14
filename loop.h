@@ -1,6 +1,7 @@
 #ifndef LOOP_RANGE_H
 #define LOOP_RANGE_H
 
+#include <cmath>
 #include <type_traits>
 #include <iterator>
 
@@ -110,9 +111,17 @@ namespace detail {
 template <typename Domain, typename N>
 class LinearGenerator
 {
+    static auto scalar(N n)
+	{
+		using std::abs;
+		using ScalarType = decltype(abs(Domain{}));
+		return ScalarType(n);
+	}
+	
 public:
+
 	LinearGenerator(Domain a, Domain b, N n, N first, N last)
-	: a_(a), dx_((b-a)/n), first_(first), last_(last)
+	: a_(a), dx_((b-a)*(1/scalar(n))), first_(first), last_(last)
 	{
 	}
 
@@ -125,7 +134,7 @@ public:
 		{
 		}
 
-		auto operator*() const { return a_ + i_ * dx_; }
+		auto operator*() const { return a_ + scalar(i_) * dx_; }
 		auto operator++() { ++i_; return *this; }
 		auto operator++(int) { auto tmp = *this; ++(*this); return tmp; }
 
@@ -153,7 +162,7 @@ auto linspace(Start a, End b, N steps, boundary type = boundary::closed)
 	static_assert(std::is_integral<N>::value, 
 		"integral boundary step counter required");	
 
-	using Domain = decltype(a + (b - a) / steps * steps); 
+	using Domain = decltype(a + (b - a)); 
 	static_assert(!std::is_integral<Domain>::value, 
 		"non-integral type boundaries values required");
 

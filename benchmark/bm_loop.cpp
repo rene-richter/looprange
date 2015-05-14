@@ -109,7 +109,7 @@ void benchmark_linspace()
     bm.run("x=a+i*dx",   10, i_times_dx,  "steps", { 10, 100, 1000, 10000, 100000 }); 
     bm.run("interpol /", 10, with_div,    "steps", { 10, 100, 1000, 10000, 100000 }); 
     bm.run("interpol *", 10, without_div, "steps", { 10, 100, 1000, 10000, 100000 }); 
-    bm.run("linspace",   10, linspace,    "steps", { 10, 100, 1000, 10000, 100000 }); 
+    bm.run("linspace()", 10, linspace,    "steps", { 10, 100, 1000, 10000, 100000 }); 
 
     bm.serialize("double type for loops", "linspace.results.txt");
 	
@@ -148,8 +148,8 @@ void benchmark_range()
 	
     bmk::benchmark<std::chrono::nanoseconds> bm;
 
-    bm.run("x+=1",  10, x_plus_2, "steps", { 10, 100, 1000, 10000, 100000 }); 
-    bm.run("range", 10, range,    "steps", { 10, 100, 1000, 10000, 100000 }); 
+    bm.run("x+=step", 10, x_plus_2, "steps", { 10, 100, 1000, 10000, 100000 }); 
+    bm.run("range()", 10, range,    "steps", { 10, 100, 1000, 10000, 100000 }); 
 
     bm.serialize("int type for loops", "range.results.txt");
 	

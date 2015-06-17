@@ -75,7 +75,7 @@ template <typename Start, typename End, typename Increment>
 auto range(Start start, End end, Increment step, bool with_end = false) 
 {
 	using Domain = typename detail::CommonType<Start, End>::type;
-	using N = typename detail::CommonType<Domain, size_t>::type;
+	using N = typename detail::CommonType<Domain, std::size_t>::type;
 	
 	static_assert(std::is_integral<Domain>::value, "integral type required");
 
@@ -92,7 +92,7 @@ auto range(Start start, End end, Increment step, bool with_end = false)
 		else if (Domain(a + n*step) != b) ++n;
 	}
 	
-	return detail::RangeGenerator<Domain, N, Increment>{ a, n, step };
+	return generate(a, n, step);
 }
 
 template <typename Start, typename End>
@@ -159,12 +159,12 @@ enum class boundary { closed, rightopen, leftopen, open };
 template <typename Start, typename End, typename N>
 auto linspace(Start a, End b, N steps, boundary type = boundary::closed)
 {
-	static_assert(std::is_integral<N>::value, 
-		"integral boundary step counter required");	
-
 	using Domain = decltype(a + (b - a)); 
 	static_assert(!std::is_integral<Domain>::value, 
-		"non-integral type boundaries values required");
+		"non-integral boundary values required");
+
+	static_assert(std::is_integral<N>::value, 
+		"integral step number required");	
 
 	if (steps < 1) 
 	{
@@ -177,6 +177,7 @@ auto linspace(Start a, End b, N steps, boundary type = boundary::closed)
 
 	N first = without_start;
 	N last  = steps - without_end;
+	
 	return detail::LinearGenerator<Domain, N>(a, b, steps, first, last);
 }
 

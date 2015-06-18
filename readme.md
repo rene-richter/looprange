@@ -5,8 +5,8 @@ This header-only library provides lazy generated values for floating-point, inte
 ## Easy to install and use
 
 * Download [loop.h](https://bitbucket.org/dozric/looprange/raw/tip/loop.h) 
-  (a c++11 version is [here](https://bitbucket.org/dozric/looprange/c++11/raw/tip/loop.h)) 
   and `#include` it into your project. 
+  (A C++11 version is [here](https://bitbucket.org/dozric/looprange/raw/tip/c++11/loop.h).) 
 * Write range-based for loop (see below).
 * Compile as C++14 or higher (`g++` or `clang` with option `-std=c++14`).
 

@@ -5,6 +5,7 @@ This header-only library provides lazy generated values for floating-point, inte
 ## Easy to install and use
 
 * Download [loop.h](https://bitbucket.org/dozric/looprange/raw/tip/loop.h) 
+  (a c++11 version is [here](https://bitbucket.org/dozric/looprange/c++11/raw/tip/loop.h)) 
   and `#include` it into your project. 
 * Write range-based for loop (see below).
 * Compile as C++14 or higher (`g++` or `clang` with option `-std=c++14`).
@@ -112,7 +113,6 @@ Fig. 2: Runtime of handwritten loops and lazy generated ranges.
 
 # TODO, limitations, known bugs
 
-* C++11 not supported
 * Test other compilers
 * `range(0, SIZE_MAX, 1, true)` is empty
 

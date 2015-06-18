@@ -89,4 +89,10 @@ int main()
 	// 10 8 6 4 2 0
 	
 	std::cout << "-----------------\n";
+	
+	auto r = loop::range(5);
+	auto b = r.begin();
+	++++b;
+	std::cout << "++++loop::range(5).begin() = " << *b << '\n';
+
 }

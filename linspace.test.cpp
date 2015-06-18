@@ -163,3 +163,16 @@ TEST_CASE("linear spaced simple Vec3D values", "[linspace]")
 		REQUIRE(v == expected);
 	}
 }
+
+TEST_CASE("linspace iterator increment", "[linspace]")
+{
+	auto r = loop::linspace(0.,1.,4);
+	auto i1 = r.begin();
+	auto i2 = r.begin();
+	
+	++i1;
+	++i1;
+	++++i2;
+		
+	REQUIRE(i1 == i2);
+}

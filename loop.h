@@ -26,12 +26,12 @@ public:
 		iterator() : n_(0) {}
 		iterator(T v, N n, Increment s) : v_(v), n_(n), s_(s) {}
 
-		auto operator*() const { return v_; }
-		auto operator++() { v_ += s_; --n_; return *this; }
-		auto operator++(int) { auto tmp = *this; ++(*this); return tmp; }
+		bool operator==(const iterator& rhs) const { return n_ == rhs.n_; }
+		bool operator!=(const iterator& rhs) const { return !(*this == rhs); }
 
-		bool operator==(iterator rhs) const { return n_ == rhs.n_; }
-		bool operator!=(iterator rhs) const { return !(*this == rhs); }
+		iterator& operator++()      { v_ += s_; --n_; return *this; }
+		iterator  operator++(int)   { auto tmp = *this; ++(*this); return tmp; }
+		auto      operator*() const { return v_; }
 	private:
 		T v_;
 		N n_;
@@ -111,11 +111,11 @@ namespace detail {
 template <typename Domain, typename N>
 class LinearGenerator
 {
-    static auto scalar(N n)
+	static auto scalar(N n)
 	{
 		using std::abs;
 		using ScalarType = decltype(abs(Domain{}));
-		return ScalarType(n);
+		return static_cast<ScalarType>(n);
 	}
 	
 public:
@@ -134,12 +134,12 @@ public:
 		{
 		}
 
-		auto operator*() const { return a_ + scalar(i_) * dx_; }
-		auto operator++() { ++i_; return *this; }
-		auto operator++(int) { auto tmp = *this; ++(*this); return tmp; }
+		bool operator==(const iterator& rhs) const { return i_ == rhs.i_; }
+		bool operator!=(const iterator& rhs) const { return !(*this == rhs); }
 
-		bool operator==(iterator rhs) const { return i_ == rhs.i_; }
-		bool operator!=(iterator rhs) const { return !(*this == rhs); }
+		iterator& operator++()      { ++i_; return *this; }
+		iterator  operator++(int)   { auto tmp = *this; ++(*this); return tmp; }
+		auto      operator*() const { return a_ + scalar(i_) * dx_; }
 	private:
 		Domain a_, dx_;
 		N i_;	
@@ -157,18 +157,15 @@ private:
 enum class boundary { closed, rightopen, leftopen, open };
 
 template <typename Start, typename End, typename N>
-auto linspace(Start a, End b, N steps, boundary type = boundary::closed)
+auto linspace(Start a, End b, N n, boundary type = boundary::closed)
 {
 	using Domain = decltype(a + (b - a)); 
-	static_assert(!std::is_integral<Domain>::value, 
-		"non-integral boundary values required");
+	static_assert(!std::is_integral<Domain>::value, "use non-integral [a,b]");
+	static_assert(std::is_integral<N>::value,       "use integral n");
 
-	static_assert(std::is_integral<N>::value, 
-		"integral step number required");	
-
-	if (steps < 1) 
+	if (n < 1) 
 	{
-		steps = 1;
+		n = 1;
 		type = boundary::open;
 	}
 	
@@ -176,9 +173,9 @@ auto linspace(Start a, End b, N steps, boundary type = boundary::closed)
 	bool without_end   = type == boundary::open || type == boundary::rightopen;
 
 	N first = without_start;
-	N last  = steps - without_end;
+	N last  = n - without_end;
 	
-	return detail::LinearGenerator<Domain, N>(a, b, steps, first, last);
+	return detail::LinearGenerator<Domain, N>(a, b, n, first, last);
 }
 
 } // end namespace loop

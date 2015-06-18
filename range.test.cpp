@@ -202,3 +202,16 @@ TEST_CASE("integer range, invalid parameter values", "[intrange]" )
 		REQUIRE(v == Vec{});
 	}
 }
+
+TEST_CASE("range iterator increment", "[intrange]")
+{
+	auto r = loop::range(5);
+	auto i1 = r.begin();
+	auto i2 = r.begin();
+	
+	++i1;
+	++i1;
+	++++i2;
+	
+	REQUIRE(i1 == i2);
+}

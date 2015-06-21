@@ -58,7 +58,7 @@ auto generate(Start start, N n, Increment step)
 template <typename Start, typename End, typename Increment>
 auto range(Start start, End end, Increment step, bool with_end = false) 
 {
-	using Domain = std::common_type_t<Start, End>;
+	using Domain = std::common_type_t<Start, End, Increment>;
 	using N = std::common_type_t<Domain, std::size_t>;
 	
 	static_assert(std::is_integral<Domain>::value, "integral type required");

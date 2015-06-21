@@ -46,22 +46,6 @@ private:
 	Increment step_;
 };
 
-template <typename X, typename U>
-class CommonType
-{
-	using X1 = typename std::remove_reference<X>::type;
-	using U1 = typename std::remove_reference<U>::type;
-public:
-	using type = decltype(X1() + U1());
-};
-
-template <typename T>
-class CommonType<T, T>
-{
-public:
-	using type = typename std::remove_reference<T>::type;
-};
-
 } // end namespace detail
 
 template <typename Start, typename N, typename Increment>
@@ -74,8 +58,8 @@ auto generate(Start start, N n, Increment step)
 template <typename Start, typename End, typename Increment>
 auto range(Start start, End end, Increment step, bool with_end = false) 
 {
-	using Domain = typename detail::CommonType<Start, End>::type;
-	using N = typename detail::CommonType<Domain, std::size_t>::type;
+	using Domain = std::common_type_t<Start, End>;
+	using N = std::common_type_t<Domain, std::size_t>;
 	
 	static_assert(std::is_integral<Domain>::value, "integral type required");
 

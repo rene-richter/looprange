@@ -184,11 +184,11 @@ linspace(Start a, End b, N n, boundary type = boundary::closed)
 		type = boundary::open;
 	}
 	
-	bool without_start = type == boundary::open || type == boundary::leftopen;
-	bool without_end   = type == boundary::open || type == boundary::rightopen;
-
-	N first = without_start;
-	N last  = n - without_end;
+	bool start_at_one = type == boundary::open || type == boundary::leftopen;
+	bool end_before_n = type == boundary::open || type == boundary::rightopen;
+    
+	N first = start_at_one;
+	N last  = n - end_before_n;
 	
 	return detail::LinearGenerator<Domain, N>(a, b, n, first, last);
 }

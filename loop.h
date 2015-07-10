@@ -29,9 +29,9 @@ public:
 		bool operator==(const iterator& rhs) const { return n_ == rhs.n_; }
 		bool operator!=(const iterator& rhs) const { return !(*this == rhs); }
 
-		iterator& operator++()      { v_ += s_; --n_; return *this; }
-		iterator  operator++(int)   { auto tmp = *this; ++(*this); return tmp; }
-		auto      operator*() const { return v_; }
+		auto& operator++()      { v_ += s_; --n_; return *this; }
+		auto  operator++(int)   { auto tmp(*this); ++*this; return tmp; }
+		auto  operator*() const { return v_; }
 	private:
 		T v_;
 		N n_;
@@ -121,9 +121,9 @@ public:
 		bool operator==(const iterator& rhs) const { return i_ == rhs.i_; }
 		bool operator!=(const iterator& rhs) const { return !(*this == rhs); }
 
-		iterator& operator++()      { ++i_; return *this; }
-		iterator  operator++(int)   { auto tmp = *this; ++(*this); return tmp; }
-		auto      operator*() const { return a_ + scalar(i_) * dx_; }
+		auto& operator++()      { ++i_; return *this; }
+		auto  operator++(int)   { auto tmp(*this); ++*this; return tmp; }
+		auto  operator*() const { return a_ + scalar(i_) * dx_; }
 	private:
 		Domain a_, dx_;
 		N i_;	
@@ -153,11 +153,11 @@ auto linspace(Start a, End b, N n, boundary type = boundary::closed)
 		type = boundary::open;
 	}
 	
-	bool without_start = type == boundary::open || type == boundary::leftopen;
-	bool without_end   = type == boundary::open || type == boundary::rightopen;
-
-	N first = without_start;
-	N last  = n - without_end;
+	bool start_at_one = type == boundary::open || type == boundary::leftopen;
+	bool end_before_n = type == boundary::open || type == boundary::rightopen;
+    
+	N first = start_at_one;
+	N last  = n - end_before_n;
 	
 	return detail::LinearGenerator<Domain, N>(a, b, n, first, last);
 }
